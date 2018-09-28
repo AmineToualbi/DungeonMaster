@@ -11,8 +11,7 @@ bool gameOver(int healthPoints){
         }
     
         return false;
-        
-    
-    
     
 }
+
+

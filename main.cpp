@@ -23,8 +23,9 @@ int main(){
     
     printInstructions();
     while(gameOver(myHP) == false){
-        drawPlayer();
         checkTrap();
+        checkItem();
+        drawPlayer();
     }
     
     return 0;
