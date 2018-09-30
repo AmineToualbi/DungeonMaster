@@ -21,15 +21,25 @@ int randomTrapGeneratorCol;
 int randomMonsterGeneratorRow;
 int randomMonsterGeneratorCol;
 
-int gogglesPositionRow;
-int gogglesPositionCol;
+int gogglesRow;
+int gogglesCol;
+int potionRow;
+int potionCol;
+int hammerCol;
+int hammerRow;
+
+bool gogglesFound = false;
+bool potionFound = false;
+bool hammerFound = false;
+
+bool trapDetector = false;
+
 
 bool gameWon = false;
 bool validMove = true;
 bool startOfGame = true;
 
-bool gogglesFound = false;
-bool trapDetector = false;
+
 
 bool hitTrap = false;
 bool hitMonster = false;
@@ -62,7 +72,8 @@ void printInstructions(){
     
     cout << "\nPress any key when you're ready to start" << endl;
     cin >> input;
-    cout << "\n \n \n" << endl;
+    drawRoom();
+    // cout << "\n \n \n" << endl;
     
     
 }
@@ -72,27 +83,27 @@ void drawRoom(){
     for (int i=0; i<row; i++){
         for (int j=0; j<col; j++){
             
-            
-            
             if(i == currentRow && j == currentCol){
+                
                 if (movement == 'A') {
                     room[i][j] = "ᗤ";
-                    
-                    
                 }
+                
                 else if(movement == 'S'){
                     room[i][j] = "ᗣ";
                     if(i == row - 2 && j == col - 2){
                         gameWon = true;
                     }
                 }
+                
                 else if(movement == 'W'){
                     room[i][j] = "ᗢ";
-                    
                 }
+                
                 else{
                     room[i][j] = "ᗧ";
                 }
+                
                 if(i == row - 2 && j == col - 2){
                     gameWon = true;
                 }
@@ -115,38 +126,48 @@ void drawRoom(){
             else{
                 room[i][j] = ".";
             }
-            
-            
-            
+ 
             
             cout << room[i][j];
+            
             if(j == col-1){
                 if(i==1){
                     cout << "\t \t \t \t  HP: " << healthPoints;
                 }
+                
                 if(gogglesFound == true){
                     if(i == 2){
                         cout << "\t \t \t \t  ITEM: ⎌";
                     }
-                     if(i == 3 && trapDetector == true){
-                        cout << "\t \t \t \t  DETECTOR: ⚠︎";
-                         trapDetector = false;
-
+                }
+                
+                if(potionFound == true){
+                    if (i == 3){
+                        cout << "\t \t \t \t  ITEM: ♥";
                     }
                 }
-              
+                
+                if(hammerFound == true){
+                    if(i == 4){
+                        cout << "\t \t \t \t  ITEM: ⚒︎";
+                    }
+                }
+                
+                
                 if(hitTrap == true){
                     if(i == 10){
-                        cout << "\t \tTrap! Guess the number between 0 and 10.";
+                        cout << "\t \tTrap! Guess the number in 0-9.";
                     }
                 }
+                
                 else if(hitMonster == true){
                     if(i == 10){
-                        cout << "\t \tMonster! Rock, paper or scissors?";
+                        cout << "\t \tMonster! Rock (1), paper (2) or scissors (3)?";
                     }
                 }
                 
             }
+            
             if(gameWon == true){
                 cout << "\n\nGAME WON!" << endl;
                 exit(0);
@@ -158,10 +179,12 @@ void drawRoom(){
     }
     
     if(hitTrap == true){
-        int computerNumber = rand() % 10 + 1;
+        int computerNumber = rand() % 9 + 1;
         int trials = 3;
         int playerGuess = 0;
         cin >> playerGuess;
+        
+        while(trials > 1){
         
         while(!cin) // or if(cin.fail())
         {
@@ -186,12 +209,51 @@ void drawRoom(){
         
         if(playerGuess == computerNumber){
             cout << "lucki moderfucker" << endl;
+            break;
+        }
+        
+        }
+        if(trials <= 1 && playerGuess != computerNumber){
+            //healthPoints -= 30;
+        }
+    }
+    
+    if(hitMonster == true){
+        int computerChoice = rand() % 3 + 1;
+        int playerGuess = 0;
+        cin >> playerGuess;
+        
+        while(!cin) // or if(cin.fail())
+        {
+            // user didn't input a number
+            cin.clear(); // reset failbit
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); //skip bad input
+            // next, request user reinput
+            cout << "Enter a number." << endl;
+            cin >> playerGuess;
+        }
+        //Check if input is in the range.
+        while(playerGuess < 1 || playerGuess > 3){
+            cout << "Enter a valid value." << endl;
+            cin >> playerGuess;
+        }
+        
+        if(playerGuess == 1 && computerChoice == 3){
+            cout << "Monster attacks with scissors" << endl;
+            cout << "lucki" << endl;
+        }
+        else if(playerGuess == 2 && computerChoice == 1){
+            cout << "Monster attacks with rock" << endl;
+            cout << "lucki" << endl;
+        }
+        else if(playerGuess == 3 && computerChoice == 2){
+            cout << "Monster attacks with paper" << endl;
+            cout << "lucki" << endl;
         }
         else{
-            healthPoints -=20;
+            cout << "lost" << endl;
+            //healthPoints -= 30;
         }
-        
-        
         
     }
     
@@ -206,6 +268,11 @@ void drawPlayer(){
         currentRow = 1;
         currentCol = 1;
         startOfGame = false;
+    }
+    
+    if(healthPoints <= 0){
+        cout << "YOU DIED" << endl;
+        exit(0);
     }
     else{
         cin.sync();
@@ -276,58 +343,67 @@ void drawPlayer(){
 void checkTrap(){
     
     srand(time(NULL));
-
     
-    if(changeTraps % 7 == 0 || hitMonster == true || hitTrap == true || startOfGame == true){
+    
+    if(changeTraps % 1 == 0 || hitMonster == true || hitTrap == true || startOfGame == true){
         hitMonster = false;
         hitTrap = false;
-    //Print position of current trap.
-    randomTrapGeneratorRow = rand() % row + 1;
-    randomTrapGeneratorCol = rand() % col + 1;
-    randomMonsterGeneratorRow = rand() % row + 1;
-    randomMonsterGeneratorCol = rand() % col + 1;
+        //Print position of current trap.
+        randomTrapGeneratorRow = rand() % row/5 + 1;
+        randomTrapGeneratorCol = rand() % col/5 + 1;
+        randomMonsterGeneratorRow = rand() % row/5 + 1;
+        randomMonsterGeneratorCol = rand() % col/5 + 1;
     }
     
-    //GOTTA WORK ON THIS
-    if ((currentRow + 1) % randomTrapGeneratorRow == 0 || (currentRow - 1) % randomTrapGeneratorRow == 0 || (currentCol + 1) % randomTrapGeneratorCol == 0 || (currentCol - 1) % randomTrapGeneratorCol == 0){
-//        cout << "TRAP NEARBY" << endl;
-        trapDetector = true;
-    }
-
     if (currentRow % randomTrapGeneratorRow == 0 || currentCol % randomTrapGeneratorCol == 0){
         if(changeTraps % 2 == 0){
-            cout << "MONSTER!" << endl;
+            //            cout << "MONSTER!" << endl;
             hitMonster = true;
         }
         else{
-            cout << "TRAP!" << endl;
+            //            cout << "TRAP!" << endl;
             hitTrap = true;
         }
         //healthPoints -= 20;
         
     }
     
-//    else if(currentRow % randomMonsterGeneratorRow == 0 || currentCol % randomMonsterGeneratorCol == 0){
-//        cout << "MONSTAR" << endl;
-//        hitMonster = true;
-//        //healthPoints -= 30;
-//    }
-    
-//    cout << "TRAP ROW" << randomTrapGeneratorRow << endl;
-//    cout << "TRAP COL" << randomTrapGeneratorCol << endl;
-
     changeTraps++;
     
 }
 
 void checkItem(){
-    gogglesPositionRow = 2;
-    gogglesPositionCol = 2;
     
-    if(currentRow == gogglesPositionRow && currentCol == gogglesPositionCol){
-       // cout << "GOGLES" << endl;
+    if(currentRow == gogglesRow && currentCol == gogglesCol){
         gogglesFound = true;
+    }
+    else if(currentRow == potionRow && currentCol == gogglesCol){
+        potionFound = true;
+    }
+    else if(currentRow == hammerRow && currentCol == hammerCol){
+        hammerFound = true;
     }
     
 }
+
+void generateItems(){
+    
+    //    gogglesRow = rand() % row + 1;
+    //    gogglesCol = rand() % col + 1;
+    //    potionRow = rand() % row + 1;
+    //    potionCol = rand() % col + 1;
+    //    hammerRow = rand() % row + 1;
+    //    hammerCol = rand() % col + 1;
+    
+    gogglesRow = 2;
+    gogglesCol = 2;
+    potionRow = 3;
+    potionCol = 3;
+    hammerRow = 4;
+    hammerCol = 4;
+    
+}
+
+
+
 

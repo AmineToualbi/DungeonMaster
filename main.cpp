@@ -22,11 +22,14 @@ using namespace std;
 int main(){
     
     printInstructions();
-    while(gameOver(myHP) == false){
+    generateItems();
+    while(true){
         checkTrap();
         checkItem();
         drawPlayer();
     }
+    
+    cout << "GAME OVER" << endl;
     
     return 0;
     

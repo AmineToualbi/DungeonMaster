@@ -10,5 +10,6 @@ void drawPlayer();
 void drawRoom();
 void checkTrap();
 void checkItem();
-
+bool gameOver(int);
+void generateItems(); 
 #endif
