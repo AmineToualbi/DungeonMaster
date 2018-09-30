@@ -35,6 +35,9 @@ bool hammerFound = false;
 
 bool trapDetector = false;
 
+bool secondAttack = true;
+bool secondAttackOccurred = false;
+int secondAtkCount = 1;
 
 bool gameWon = false;
 bool validMove = true;
@@ -127,7 +130,7 @@ void drawRoom(){
             else{
                 room[i][j] = ".";
             }
- 
+            
             
             cout << room[i][j];
             
@@ -299,22 +302,25 @@ void checkTrap(){
         randomMonsterGeneratorRow = rand() % (row/4) + 1;
         randomMonsterGeneratorCol = rand() % (col/4) + 1;
     }
-//
-//    cout << "TRAP: R = " << randomTrapGeneratorRow << " C = " << randomTrapGeneratorCol << endl;
-//    cout << "MONSTER: R = " << randomMonsterGeneratorRow << " C = " << randomMonsterGeneratorCol << endl;
-//    cout << "CURRENT: R = " << currentRow << " C = " << currentCol << endl;
+    //
+    //    cout << "TRAP: R = " << randomTrapGeneratorRow << " C = " << randomTrapGeneratorCol << endl;
+    //    cout << "MONSTER: R = " << randomMonsterGeneratorRow << " C = " << randomMonsterGeneratorCol << endl;
+    //    cout << "CURRENT: R = " << currentRow << " C = " << currentCol << endl;
     
-    if(currentRow % randomMonsterGeneratorRow == 0 && currentCol % randomMonsterGeneratorCol == 0){
+    
+     if(currentRow % randomMonsterGeneratorRow == 0 && currentCol % randomMonsterGeneratorCol == 0){
         hitMonster = true;
     }
     else if (currentRow % randomTrapGeneratorRow == 0 && currentCol % randomTrapGeneratorCol == 0){
         hitTrap = true;
     }
-        
+    
    
     
     
-
+    
+    
+    
     changeTraps++;
     
 }
@@ -361,6 +367,9 @@ void potion(){
     
 }
 void hammer(){
+    if(hammerFound == true){
+        
+    }
     
 }
 
@@ -393,12 +402,12 @@ void trapAction(){
         }
         
         trials--;
-            
         
-//        if(playerGuess == computerNumber){
-//            cout << "You suddenly notice the suspicious trap on the floor and dodge it." << endl;
-//            break;
-//        }
+        
+        //        if(playerGuess == computerNumber){
+        //            cout << "You suddenly notice the suspicious trap on the floor and dodge it." << endl;
+        //            break;
+        //        }
         
     }
     if(playerGuess != computerNumber){
@@ -413,39 +422,69 @@ void trapAction(){
 void monsterAction(){
     int computerChoice = rand() % 3 + 1;
     int playerGuess = 0;
-    cin >> playerGuess;
+    secondAttackOccurred = false;
     
-    while(!cin) // or if(cin.fail())
-    {
-        // user didn't input a number
-        cin.clear(); // reset failbit
-        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); //skip bad input
-        // next, request user reinput
-        cout << "Enter a number." << endl;
+    while(true){
         cin >> playerGuess;
-    }
-    //Check if input is in the range.
-    while(playerGuess < 1 || playerGuess > 3){
-        cout << "Enter a valid value." << endl;
-        cin >> playerGuess;
+
+        while(!cin) // or if(cin.fail())
+        {
+            // user didn't input a number
+            cin.clear(); // reset failbit
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); //skip bad input
+            // next, request user reinput
+            cout << "Enter a number." << endl;
+            cin >> playerGuess;
+        }
+        //Check if input is in the range.
+        while(playerGuess < 1 || playerGuess > 3){
+            cout << "Enter a valid value." << endl;
+            cin >> playerGuess;
+        }
+        
+        
+        if(playerGuess == 1 && computerChoice == 3){
+            cout << "Monster attacks with scissors" << endl;
+            cout << "The monster is stunned, run!" << endl;
+            //        secondAttack = false;
+            break;
+        }
+        
+        else if(playerGuess == 2 && computerChoice == 1){
+            cout << "Monster attacks with rock" << endl;
+            cout << "The monster is stunned, run!" << endl;
+            //        secondAttack = false;
+            break;
+        }
+        
+        else if(playerGuess == 3 && computerChoice == 2){
+            cout << "Monster attacks with paper" << endl;
+            cout << "The monster is stunned, run!" << endl;
+            //        secondAttack = false;
+            break;
+        }
+        else{
+            if(hammerFound == false){
+                cout << "The monster attacked you by surprise, you're hurt. Run away!" << endl;
+                healthPoints -= 30;
+                //        secondAttack = false;
+                break;
+            }
+            else if(hammerFound == true){
+                if(secondAttackOccurred == false){
+                    cout << "You're able to hit the monster again with your hammer. Rock, paper, or scissors?" << endl;
+                    secondAttackOccurred = true;
+                    continue;
+                }
+                else{
+                    cout << "The monster attacked you by surprise, you're hurt. Run away!" << endl;
+                    healthPoints -= 30;
+                    break;
+                }
+            }
+        }
     }
     
-    if(playerGuess == 1 && computerChoice == 3){
-        cout << "Monster attacks with scissors" << endl;
-        cout << "The monster is stunned, run!" << endl;
-    }
-    else if(playerGuess == 2 && computerChoice == 1){
-        cout << "Monster attacks with rock" << endl;
-        cout << "The monster is stunned, run!" << endl;
-    }
-    else if(playerGuess == 3 && computerChoice == 2){
-        cout << "Monster attacks with paper" << endl;
-        cout << "The monster is stunned, run!" << endl;
-    }
-    else{
-        cout << "The monster attacked you by surprise, you're hurt. Run away!" << endl;
-        healthPoints -= 30;
-    }
     
 }
 
