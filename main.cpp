@@ -24,9 +24,9 @@ int main(){
     printInstructions();
     generateItems();
     while(true){
+        drawPlayer();
         checkTrap();
         checkItem();
-        drawPlayer();
     }
     
     cout << "GAME OVER" << endl;

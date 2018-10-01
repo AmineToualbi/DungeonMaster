@@ -12,9 +12,7 @@ void checkTrap();
 void checkItem();
 bool gameOver(int);
 void generateItems();
-void goggles();
 void potion();
-void hammer();
 void trapAction();
 void monsterAction();
 #endif
