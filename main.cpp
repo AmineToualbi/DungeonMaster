@@ -11,9 +11,8 @@
 #include <iomanip>
 #include <cmath>
 #include "graphicFcts.h"
-#include "gameFcts.h"
+//#include "gameFcts.h"
 
-int myHP = 100;
 
 
 
@@ -28,7 +27,7 @@ int main(){
         checkTrap();
         checkItem();
     }
-    
+
     cout << "GAME OVER" << endl;
     
     return 0;

@@ -1,5 +1,3 @@
-//Header file for PFunctions
-
 #ifndef GRAPHICFCTS_H
 #define GRAPHICFCTS_H
 
@@ -15,4 +13,7 @@ void generateItems();
 void potion();
 void trapAction();
 void monsterAction();
+void endBox(bool);
+void bigSpace();
+void beepSound();
 #endif
